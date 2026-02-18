@@ -1,1 +1,8 @@
+Syslog
+| where SyslogMessage contains "Failed password"
+| parse SyslogMessage with * "from " IPAddress " port" *
+| summarize FailedAttempts = count() 
+          by IPAddress, Computer, bin(TimeGenerated, 5m)
+| where FailedAttempts > 5
+| project TimeGenerated, Computer, IPAddress, FailedAttempts
 
